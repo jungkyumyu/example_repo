@@ -11,9 +11,12 @@
     <meta name="apple-mobile-web-app-title" content="Tokyo Trip">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <!-- App Icon (Data URI for simplicity) -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗾</text></svg>">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗾</text></svg>">
+    <!-- App Icon (Must be PNG for iOS) -->
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/854/854878.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/854/854878.png">
+
+    <!-- Web App Manifest (Data URI) -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"도쿄 여행 지도","short_name":"도쿄여행","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/854/854878.png","sizes":"512x512","type":"image/png"}]}'>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
