@@ -33,23 +33,6 @@
         #map { height: 100%; width: 100%; z-index: 1; }
         body, html { height: 100%; margin: 0; padding: 0; overflow: hidden; /* Prevent elastic scrolling on iOS */ }
         
-        /* Legend Style */
-        .legend {
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            font-size: 12px;
-            line-height: 1.5;
-        }
-        .legend i {
-            width: 18px;
-            height: 18px;
-            float: left;
-            margin-right: 8px;
-            opacity: 0.7;
-        }
-
         /* Custom Tooltip */
         .leaflet-tooltip.custom-tooltip {
             background-color: rgba(255, 255, 255, 0.9);
@@ -336,19 +319,6 @@
                 });
             }
         });
-
-        // Add Legend
-        const legend = L.control({ position: 'bottomright' });
-        legend.onAdd = function (map) {
-            const div = L.DomUtil.create('div', 'legend');
-            div.innerHTML += '<div class="mb-1 font-bold border-b pb-1">범례</div>';
-            div.innerHTML += '<div class="flex items-center mt-1"><i style="background: red; border-radius: 50%;"></i> <span>숙소</span></div>';
-            div.innerHTML += '<div class="flex items-center"><i style="background: green; border-radius: 50%;"></i> <span>랜드마크</span></div>';
-            div.innerHTML += '<div class="flex items-center"><i style="background: blue; border-radius: 50%;"></i> <span>쇼핑</span></div>';
-            div.innerHTML += '<div class="flex items-center"><i style="background: orange; border-radius: 50%;"></i> <span>맛집/카페</span></div>';
-            return div;
-        };
-        legend.addTo(map);
 
         // --- 5. Toggle List Logic ---
         const listHeader = document.getElementById('list-header');
