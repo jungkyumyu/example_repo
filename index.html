@@ -47,6 +47,11 @@
             white-space: nowrap;
         }
 
+        /* Hide Labels Class - Applied to #map via JS */
+        .map-hide-labels .leaflet-tooltip {
+            display: none !important;
+        }
+
         /* List Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
@@ -104,9 +109,18 @@
 
     <!-- Header -->
     <header class="bg-gray-900 text-white p-4 shadow-md z-10 flex justify-between items-center pt-safe">
-        <div>
-            <h1 class="text-xl font-bold">GR&JK Tokyo Trip</h1>
-            <p class="text-sm text-gray-400"> 가람&정겸 도쿄 여행 </p>
+        <div class="flex flex-col justify-center">
+            <h1 class="text-lg font-bold leading-tight">GR&JK Tokyo Trip</h1>
+            <p class="text-xs text-gray-400">가람&정겸 도쿄 여행</p>
+        </div>
+
+        <!-- Label Toggle Switch (Top Right) -->
+        <div class="flex items-center space-x-2 bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700">
+            <span class="text-xs text-gray-300 font-bold">이름 표시</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="label-toggle" class="sr-only peer" checked>
+                <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500"></div>
+            </label>
         </div>
     </header>
 
@@ -529,6 +543,16 @@
 
         map.on('locationfound', onLocationFound);
         map.on('locationerror', onLocationError);
+
+        // --- 8. Label Toggle Logic ---
+        document.getElementById('label-toggle').addEventListener('change', function() {
+            const mapDiv = document.getElementById('map');
+            if (this.checked) {
+                mapDiv.classList.remove('map-hide-labels');
+            } else {
+                mapDiv.classList.add('map-hide-labels');
+            }
+        });
 
     </script>
 </body>
