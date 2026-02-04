@@ -163,6 +163,18 @@
                 <ul class="text-sm space-y-1" id="list-hotel"></ul>
             </div>
 
+            <!-- Wife Shopping (Toggle) -->
+            <div class="mb-4">
+                <div class="flex justify-between items-center border-b border-pink-200 pb-1 mb-2 sticky top-0 bg-white z-10">
+                    <h3 class="text-sm font-semibold text-pink-600">👜 와이프-쇼핑</h3>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <span class="text-xs text-gray-500">보기</span>
+                        <input type="checkbox" class="category-toggle" checked onchange="toggleCategory('wife_shopping', this.checked)">
+                    </label>
+                </div>
+                <ul class="text-sm space-y-1" id="list-wife_shopping"></ul>
+            </div>
+
             <!-- Wife Food (Toggle) -->
             <div class="mb-4">
                 <div class="flex justify-between items-center border-b border-purple-200 pb-1 mb-2 sticky top-0 bg-white z-10">
@@ -257,7 +269,8 @@
             special: createIcon('green', 0.6),
             food: createIcon('orange', 0.6),
             wife_food: createIcon('violet', 0.6),
-            wife_cafe: createIcon('gold', 0.6)
+            wife_cafe: createIcon('gold', 0.6),
+            wife_shopping: createIcon('pink', 0.6)
         };
 
         // --- 3. Data with Addresses ---
@@ -272,6 +285,11 @@
             { name: "Akachan Honpo Kinshicho", lat: 35.6975, lng: 139.8138, type: "special", desc: "아동복 전문 (아카짱혼포)", address: "2 Chome−2−1 ArcaKit Kinshicho 5F, Sumida City, Tokyo 130-0013" },
             { name: "Toranomon Hills", lat: 35.6662, lng: 139.7495, type: "special", desc: "복합 문화 공간 (구경)", address: "1 Chome-23-1 Toranomon, Minato City, Tokyo 105-6390" },
             { name: "OZEKI Tokyo Gallery", lat: 35.6860, lng: 139.7798, type: "special", desc: "아카리 조명 (이사무 노구치)", address: "1 Chome-2-6 Nihonbashiningyocho, Chuo City, Tokyo 103-0013" },
+
+            // Wife's Shopping (New Category)
+            { name: "NUIR Vintage", lat: 35.661965, lng: 139.698372, type: "wife_shopping", desc: "빈티지샵", address: "3−5 Udagawacho, Shibuya City, Tokyo 150-0042 (5F)" },
+            { name: "AMORE Omotesando", lat: 35.665786, lng: 139.710328, type: "wife_shopping", desc: "빈티지샵", address: "5 Chome-1-15 Jingumae, Shibuya City, Tokyo 150-0001" },
+            { name: "QOO (Vintage Qoo)", lat: 35.666212, lng: 139.708892, type: "wife_shopping", desc: "빈티지샵", address: "5 Chome−2−6 Jingumae, Shibuya City, Tokyo 150-0001 (B1F-2F)" },
 
             // Wife's Food (New Category)
             { name: "Tsujihan Ark Hills", lat: 35.6675, lng: 139.7397, type: "wife_food", desc: "카이센동 (아크모리 빌딩)", address: "1 Chome−12−32 Ark Mori Building 3F, Akasaka, Minato City, Tokyo 107-0052" },
@@ -405,7 +423,8 @@
             shopping: [],
             food: [],
             wife_food: [],
-            wife_cafe: []
+            wife_cafe: [],
+            wife_shopping: []
         };
 
         // Grouping
