@@ -77,6 +77,27 @@
             height: 1.2rem;
             cursor: pointer;
         }
+        
+        /* User Location Pulse Animation */
+        @keyframes pulse-blue {
+            0% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+        }
+        .user-pulse {
+            background-color: #3B82F6;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse-blue 2s infinite;
+        }
     </style>
 </head>
 <body class="flex flex-col h-screen bg-gray-100">
@@ -92,6 +113,17 @@
     <!-- Map Container -->
     <div class="flex-grow relative">
         <div id="map"></div>
+        
+        <!-- My Location Button (Top Left) -->
+        <button id="my-location-btn" 
+                class="absolute top-4 left-4 z-[400] bg-white p-2 rounded-lg shadow-md border border-gray-300 text-gray-600 hover:text-blue-600 hover:bg-gray-50 focus:outline-none transition-colors"
+                onclick="findMyLocation()"
+                title="내 위치 보기">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
     </div>
 
     <!-- Collapsible Location List -->
@@ -411,9 +443,6 @@
             }
         }
 
-        // Add Legend
-        // Removed as per request
-
         // --- 6. Toggle List Logic ---
         const listHeader = document.getElementById('list-header');
         const listContent = document.getElementById('list-content');
@@ -441,6 +470,65 @@
         if (window.innerWidth < 1024) {
              toggleList(false);
         }
+
+        // --- 7. Geolocation Logic ---
+        let userMarker = null;
+        let userCircle = null;
+
+        function findMyLocation() {
+            // Toast notification indicating search has started
+            Toastify({
+                text: "📍 위치를 찾는 중...",
+                duration: 2000,
+                gravity: "top", 
+                position: "center", 
+                style: {
+                    background: "linear-gradient(to right, #3B82F6, #2563EB)",
+                    borderRadius: "20px",
+                    fontSize: "14px",
+                    boxShadow: "0 3px 6px rgba(0,0,0,0.2)"
+                }
+            }).showToast();
+
+            map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true});
+        }
+
+        function onLocationFound(e) {
+            const radius = e.accuracy / 2;
+
+            if (userMarker) map.removeLayer(userMarker);
+            if (userCircle) map.removeLayer(userCircle);
+
+            userMarker = L.marker(e.latlng, {
+                icon: L.divIcon({
+                    className: 'bg-transparent',
+                    html: '<div class="user-pulse"></div>',
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 8]
+                })
+            }).addTo(map)
+            .bindPopup("현재 내 위치 (반경 " + Math.round(radius) + "m)").openPopup();
+
+            userCircle = L.circle(e.latlng, radius).addTo(map);
+        }
+
+        function onLocationError(e) {
+            Toastify({
+                text: "🚫 위치 접근 권한을 확인해주세요.",
+                duration: 3000,
+                gravity: "top", 
+                position: "center", 
+                style: {
+                    background: "#ef4444",
+                    borderRadius: "20px",
+                    fontSize: "14px",
+                    boxShadow: "0 3px 6px rgba(0,0,0,0.2)"
+                }
+            }).showToast();
+        }
+
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
 
     </script>
 </body>
