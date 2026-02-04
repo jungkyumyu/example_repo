@@ -69,6 +69,14 @@
         #list-container {
             padding-bottom: env(safe-area-inset-bottom);
         }
+
+        /* Toggle Checkbox Style */
+        .category-toggle {
+            accent-color: #4B5563; /* Gray-600 */
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="flex flex-col h-screen bg-gray-100">
@@ -92,30 +100,78 @@
         
         <!-- List Header (Click to Toggle) -->
         <div id="list-header" class="p-3 bg-gray-50 border-b border-gray-200 cursor-pointer flex justify-between items-center rounded-t-lg hover:bg-gray-100 transition-colors">
-            <h2 class="font-bold text-gray-800">📍 장소 목록 (이름순 정렬)</h2>
+            <h2 class="font-bold text-gray-800">📍 장소 목록 / 필터</h2>
             <span id="toggle-icon" class="text-gray-500 text-xl transform transition-transform duration-300">▼</span>
         </div>
 
         <!-- List Content -->
         <div id="list-content" class="overflow-y-auto custom-scrollbar p-4 transition-all duration-300">
             
+            <!-- Hotel (Always Visible) -->
             <div class="mb-4">
-                <h3 class="text-sm font-semibold text-red-600 border-b border-red-200 pb-1 mb-2 sticky top-0 bg-white">🏠 숙소 (Hotel)</h3>
+                <div class="flex justify-between items-center border-b border-red-200 pb-1 mb-2 sticky top-0 bg-white z-10">
+                    <h3 class="text-sm font-semibold text-red-600">🏠 숙소 (Hotel)</h3>
+                </div>
                 <ul class="text-sm space-y-1" id="list-hotel"></ul>
             </div>
 
+            <!-- Wife Food (Toggle) -->
             <div class="mb-4">
-                <h3 class="text-sm font-semibold text-green-600 border-b border-green-200 pb-1 mb-2 sticky top-0 bg-white">🏢 랜드마크 (Landmark)</h3>
+                <div class="flex justify-between items-center border-b border-purple-200 pb-1 mb-2 sticky top-0 bg-white z-10">
+                    <h3 class="text-sm font-semibold text-purple-600">👩🏻‍❤️‍👨🏻 와이프-밥집</h3>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <span class="text-xs text-gray-500">보기</span>
+                        <input type="checkbox" class="category-toggle" checked onchange="toggleCategory('wife_food', this.checked)">
+                    </label>
+                </div>
+                <ul class="text-sm space-y-1" id="list-wife_food"></ul>
+            </div>
+
+            <!-- Wife Cafe (Toggle) -->
+            <div class="mb-4">
+                <div class="flex justify-between items-center border-b border-yellow-200 pb-1 mb-2 sticky top-0 bg-white z-10">
+                    <h3 class="text-sm font-semibold text-yellow-600">☕ 와이프-카페</h3>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <span class="text-xs text-gray-500">보기</span>
+                        <input type="checkbox" class="category-toggle" checked onchange="toggleCategory('wife_cafe', this.checked)">
+                    </label>
+                </div>
+                <ul class="text-sm space-y-1" id="list-wife_cafe"></ul>
+            </div>
+
+            <!-- Landmarks (Toggle) -->
+            <div class="mb-4">
+                <div class="flex justify-between items-center border-b border-green-200 pb-1 mb-2 sticky top-0 bg-white z-10">
+                    <h3 class="text-sm font-semibold text-green-600">🏢 랜드마크 (Landmark)</h3>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <span class="text-xs text-gray-500">보기</span>
+                        <input type="checkbox" class="category-toggle" checked onchange="toggleCategory('special', this.checked)">
+                    </label>
+                </div>
                 <ul class="text-sm space-y-1" id="list-special"></ul>
             </div>
 
+            <!-- Shopping (Toggle) -->
             <div class="mb-4">
-                <h3 class="text-sm font-semibold text-blue-600 border-b border-blue-200 pb-1 mb-2 sticky top-0 bg-white">👕 쇼핑 (Shopping)</h3>
+                <div class="flex justify-between items-center border-b border-blue-200 pb-1 mb-2 sticky top-0 bg-white z-10">
+                    <h3 class="text-sm font-semibold text-blue-600">👕 쇼핑 (Shopping)</h3>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <span class="text-xs text-gray-500">보기</span>
+                        <input type="checkbox" class="category-toggle" checked onchange="toggleCategory('shopping', this.checked)">
+                    </label>
+                </div>
                 <ul class="text-sm space-y-1" id="list-shopping"></ul>
             </div>
 
-            <div>
-                <h3 class="text-sm font-semibold text-orange-600 border-b border-orange-200 pb-1 mb-2 sticky top-0 bg-white">🍜 맛집 & 카페 (Food)</h3>
+            <!-- Food (Toggle) -->
+            <div class="mb-4">
+                <div class="flex justify-between items-center border-b border-orange-200 pb-1 mb-2 sticky top-0 bg-white z-10">
+                    <h3 class="text-sm font-semibold text-orange-600">🍜 맛집 & 카페 (Food)</h3>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <span class="text-xs text-gray-500">보기</span>
+                        <input type="checkbox" class="category-toggle" checked onchange="toggleCategory('food', this.checked)">
+                    </label>
+                </div>
                 <ul class="text-sm space-y-1" id="list-food"></ul>
             </div>
         </div>
@@ -149,7 +205,9 @@
             hotel: createIcon('red'),
             shopping: createIcon('blue'),
             special: createIcon('green'),
-            food: createIcon('orange')
+            food: createIcon('orange'),
+            wife_food: createIcon('violet'), // 보라색
+            wife_cafe: createIcon('gold')    // 노란색(골드)
         };
 
         // --- 3. Data with Addresses ---
@@ -157,10 +215,27 @@
             // Hotel
             { name: "All Day Place Shibuya", lat: 35.661494, lng: 139.703126, type: "hotel", desc: "미야시타 파크 옆 호텔", address: "1 Chome-17-1 Shibuya, Shibuya City, Tokyo 150-0002" },
 
-            // Landmarks
+            // Landmarks (Added New)
             { name: "Seibu Shibuya", lat: 35.6603, lng: 139.7004, type: "special", desc: "백화점", address: "21-1 Udagawacho, Shibuya City, Tokyo 150-8330" },
             { name: "21_21 Design Sight", lat: 35.6661, lng: 139.7300, type: "special", desc: "전시관/미술관", address: "9 Chome-7-6 Akasaka, Minato City, Tokyo 107-0052" },
             { name: "National Art Center", lat: 35.6652, lng: 139.7264, type: "special", desc: "국립신미술관", address: "7 Chome-22-2 Roppongi, Minato City, Tokyo 106-8558" },
+            { name: "Akachan Honpo Kinshicho", lat: 35.6975, lng: 139.8138, type: "special", desc: "아동복 전문 (아카짱혼포)", address: "2 Chome−2−1 ArcaKit Kinshicho 5F, Sumida City, Tokyo 130-0013" },
+            { name: "Toranomon Hills", lat: 35.6662, lng: 139.7495, type: "special", desc: "복합 문화 공간 (구경)", address: "1 Chome-23-1 Toranomon, Minato City, Tokyo 105-6390" },
+            { name: "OZEKI Tokyo Gallery", lat: 35.6860, lng: 139.7798, type: "special", desc: "아카리 조명 (이사무 노구치)", address: "1 Chome-2-6 Nihonbashiningyocho, Chuo City, Tokyo 103-0013" },
+
+            // Wife's Food (New Category)
+            { name: "Tsujihan Ark Hills", lat: 35.6675, lng: 139.7397, type: "wife_food", desc: "카이센동 (아크모리 빌딩)", address: "1 Chome−12−32 Ark Mori Building 3F, Akasaka, Minato City, Tokyo 107-0052" },
+            { name: "Onigiri Cafe", lat: 35.6688, lng: 139.6932, type: "wife_food", desc: "조식 (오니기리)", address: "1 Chome−9−15, Tomigaya, Shibuya, Tokyo 151-0063" },
+            { name: "Yakiniku Inoue Ginza", lat: 35.674315, lng: 139.766763, type: "wife_food", desc: "야키니쿠", address: "1 Chome-6-6 Ginza, Chuo City, Tokyo 104-0061" },
+            { name: "Sekiya Spaghetti", lat: 35.644485, lng: 139.699564, type: "wife_food", desc: "스파게티", address: "2 Chome-29-8 Kamimeguro, Meguro City, Tokyo 153-0051" },
+            { name: "Otazushi", lat: 35.685382, lng: 139.780362, type: "wife_food", desc: "스시 오마카세", address: "1 Chome-5-2 Nihonbashiningyocho, Chuo City, Tokyo 103-0013" },
+            { name: "Nihonbashi Tonkatsu Hajime", lat: 35.6865, lng: 139.7758, type: "wife_food", desc: "돈가스", address: "1 Chome−13−9, Nihonbashimuromachi, Chuo City, Tokyo 103-0022" },
+
+            // Wife's Cafe (New Category)
+            { name: "Bongen Coffee Ginza", lat: 35.6724, lng: 139.7707, type: "wife_cafe", desc: "카페 (본겐 커피)", address: "2 Chome-16-3 Ginza, Chuo City, Tokyo 104-0061" },
+            { name: "Glitch Coffee Ginza", lat: 35.6702, lng: 139.7695, type: "wife_cafe", desc: "카페 (글릿치 커피)", address: "4 Chome−14−8 Ginza, Chuo City, Tokyo 104-0061" },
+            { name: "Camelback Sandwich", lat: 35.6639, lng: 139.6924, type: "wife_cafe", desc: "카페 (샌드위치)", address: "42-2 Kamiyamacho, Shibuya, Tokyo 150-0047" },
+            { name: "Cloud Club Matcha", lat: 35.6710, lng: 139.7685, type: "wife_cafe", desc: "말차 카페", address: "3 Chome-14-6 Ginza, Chuo City, Tokyo 104-0061" },
 
             // Shopping (New & Existing)
             { name: "Hankyu Men's Tokyo", lat: 35.6732, lng: 139.7615, type: "shopping", desc: "백화점 (RRL, WareHouse 등)", address: "2 Chome-5-1 Yurakucho, Chiyoda City, Tokyo 100-8488" },
@@ -275,7 +350,9 @@
             hotel: [],
             special: [],
             shopping: [],
-            food: []
+            food: [],
+            wife_food: [],
+            wife_cafe: []
         };
 
         // Grouping
@@ -320,7 +397,24 @@
             }
         });
 
-        // --- 5. Toggle List Logic ---
+        // --- 5. Logic: Category Toggle ---
+        function toggleCategory(type, isVisible) {
+            // Retrieve list of locations for this category
+            if(categories[type]) {
+                categories[type].forEach(loc => {
+                    if (isVisible) {
+                        loc.marker.addTo(map);
+                    } else {
+                        loc.marker.remove();
+                    }
+                });
+            }
+        }
+
+        // Add Legend
+        // Removed as per request
+
+        // --- 6. Toggle List Logic ---
         const listHeader = document.getElementById('list-header');
         const listContent = document.getElementById('list-content');
         const toggleIcon = document.getElementById('toggle-icon');
