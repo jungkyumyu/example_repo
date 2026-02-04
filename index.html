@@ -11,29 +11,20 @@
     <meta name="apple-mobile-web-app-title" content="Tokyo Trip">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <!-- App Icon (Must be PNG for iOS) -->
+    <!-- App Icon -->
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/854/854878.png">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/854/854878.png">
 
-    <!-- Web App Manifest (Data URI) -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"도쿄 여행 지도","short_name":"도쿄여행","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/854/854878.png","sizes":"512x512","type":"image/png"}]}'>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <!-- Toastify CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <!-- Toastify JS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <style>
         #map { height: 100%; width: 100%; z-index: 1; }
-        body, html { height: 100%; margin: 0; padding: 0; overflow: hidden; /* Prevent elastic scrolling on iOS */ }
+        body, html { height: 100%; margin: 0; padding: 0; overflow: hidden; }
         
-        /* Custom Tooltip */
         .leaflet-tooltip.custom-tooltip {
             background-color: rgba(255, 255, 255, 0.9);
             border: 1px solid #ccc;
@@ -47,58 +38,30 @@
             white-space: nowrap;
         }
 
-        /* Hide Labels Class - Applied to #map via JS */
-        .map-hide-labels .leaflet-tooltip {
-            display: none !important;
-        }
+        .map-hide-labels .leaflet-tooltip { display: none !important; }
 
-        /* List Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #888; 
-            border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #555; 
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
 
-        /* Safe Area for iPhone X+ */
-        header {
-            padding-top: env(safe-area-inset-top);
-        }
-        #list-container {
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+        header { padding-top: env(safe-area-inset-top); }
+        #list-container { padding-bottom: env(safe-area-inset-bottom); }
 
-        /* Toggle Checkbox Style */
         .category-toggle {
-            accent-color: #4B5563; /* Gray-600 */
+            accent-color: #4B5563;
             width: 1.2rem;
             height: 1.2rem;
             cursor: pointer;
         }
         
-        /* User Location Pulse Animation */
         @keyframes pulse-blue {
-            0% {
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
         .user-pulse {
             background-color: #3B82F6;
-            width: 16px;
-            height: 16px;
+            width: 16px; height: 16px;
             border-radius: 50%;
             border: 2px solid white;
             animation: pulse-blue 2s infinite;
@@ -107,30 +70,23 @@
 </head>
 <body class="flex flex-col h-screen bg-gray-100">
 
-    <!-- Header -->
     <header class="bg-gray-900 text-white p-4 shadow-md z-10 flex justify-between items-center pt-safe">
         <div class="flex flex-col justify-center">
             <h1 class="text-lg font-bold leading-tight">GR&JK Tokyo Trip</h1>
             <p class="text-xs text-gray-400">가람&정겸 도쿄 여행</p>
         </div>
 
-        <!-- Label Toggle Switch (Top Right) -->
         <div class="flex items-center space-x-2 bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700">
             <span class="text-xs text-gray-300 font-bold">이름 표시</span>
             <label class="relative inline-flex items-center cursor-pointer">
-                <!-- unchecked by default -->
                 <input type="checkbox" id="label-toggle" class="sr-only peer">
-                <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500"></div>
+                <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500"></div>
             </label>
         </div>
     </header>
 
-    <!-- Map Container -->
     <div class="flex-grow relative">
-        <!-- Labels hidden by default (map-hide-labels class added) -->
         <div id="map" class="map-hide-labels"></div>
-        
-        <!-- My Location Button (Top Left) -->
         <button id="my-location-btn" 
                 class="absolute top-4 left-4 z-[400] bg-white p-2 rounded-lg shadow-md border border-gray-300 text-gray-600 hover:text-blue-600 hover:bg-gray-50 focus:outline-none transition-colors"
                 onclick="findMyLocation()"
@@ -142,20 +98,16 @@
         </button>
     </div>
 
-    <!-- Collapsible Location List -->
     <div id="list-container" class="bg-white border-t border-gray-200 lg:border-none lg:rounded-lg lg:shadow-2xl z-20 
                                   fixed bottom-0 left-0 w-full lg:absolute lg:top-4 lg:right-4 lg:left-auto lg:w-80 lg:h-auto lg:bottom-auto transition-all duration-300 flex flex-col max-h-[50vh] lg:max-h-[80vh] pb-safe">
         
-        <!-- List Header (Click to Toggle) -->
         <div id="list-header" class="p-3 bg-gray-50 border-b border-gray-200 cursor-pointer flex justify-between items-center rounded-t-lg hover:bg-gray-100 transition-colors">
             <h2 class="font-bold text-gray-800">📍 장소 목록 / 필터</h2>
             <span id="toggle-icon" class="text-gray-500 text-xl transform transition-transform duration-300">▼</span>
         </div>
 
-        <!-- List Content -->
         <div id="list-content" class="overflow-y-auto custom-scrollbar p-4 transition-all duration-300">
-            
-            <!-- Hotel (Always Visible) -->
+            <!-- Hotel -->
             <div class="mb-4">
                 <div class="flex justify-between items-center border-b border-red-200 pb-1 mb-2 sticky top-0 bg-white z-10">
                     <h3 class="text-sm font-semibold text-red-600">🏠 숙소 (Hotel)</h3>
@@ -163,19 +115,7 @@
                 <ul class="text-sm space-y-1" id="list-hotel"></ul>
             </div>
 
-            <!-- Wife Shopping (Toggle) -->
-            <div class="mb-4">
-                <div class="flex justify-between items-center border-b border-pink-200 pb-1 mb-2 sticky top-0 bg-white z-10">
-                    <h3 class="text-sm font-semibold text-pink-600">🪅 와이프-쇼핑</h3>
-                    <label class="flex items-center space-x-1 cursor-pointer">
-                        <span class="text-xs text-gray-500">보기</span>
-                        <input type="checkbox" class="category-toggle" checked onchange="toggleCategory('wife_shopping', this.checked)">
-                    </label>
-                </div>
-                <ul class="text-sm space-y-1" id="list-wife_shopping"></ul>
-            </div>
-
-            <!-- Wife Food (Toggle) -->
+            <!-- Wife Food -->
             <div class="mb-4">
                 <div class="flex justify-between items-center border-b border-purple-200 pb-1 mb-2 sticky top-0 bg-white z-10">
                     <h3 class="text-sm font-semibold text-purple-600">👩🏻‍❤️‍👨🏻 와이프-밥집</h3>
@@ -187,7 +127,7 @@
                 <ul class="text-sm space-y-1" id="list-wife_food"></ul>
             </div>
 
-            <!-- Wife Cafe (Toggle) -->
+            <!-- Wife Cafe -->
             <div class="mb-4">
                 <div class="flex justify-between items-center border-b border-yellow-200 pb-1 mb-2 sticky top-0 bg-white z-10">
                     <h3 class="text-sm font-semibold text-yellow-600">☕ 와이프-카페</h3>
@@ -199,10 +139,10 @@
                 <ul class="text-sm space-y-1" id="list-wife_cafe"></ul>
             </div>
 
-            <!-- Landmarks (Toggle) -->
+            <!-- Wife Shopping -->
             <div class="mb-4">
                 <div class="flex justify-between items-center border-b border-green-200 pb-1 mb-2 sticky top-0 bg-white z-10">
-                    <h3 class="text-sm font-semibold text-green-600">🏢 랜드마크 (Landmark)</h3>
+                    <h3 class="text-sm font-semibold text-green-600">🛍️ 와이프-쇼핑</h3>
                     <label class="flex items-center space-x-1 cursor-pointer">
                         <span class="text-xs text-gray-500">보기</span>
                         <input type="checkbox" class="category-toggle" checked onchange="toggleCategory('special', this.checked)">
@@ -211,7 +151,7 @@
                 <ul class="text-sm space-y-1" id="list-special"></ul>
             </div>
 
-            <!-- Shopping (Toggle) -->
+            <!-- Shopping -->
             <div class="mb-4">
                 <div class="flex justify-between items-center border-b border-blue-200 pb-1 mb-2 sticky top-0 bg-white z-10">
                     <h3 class="text-sm font-semibold text-blue-600">👕 쇼핑 (Shopping)</h3>
@@ -223,7 +163,7 @@
                 <ul class="text-sm space-y-1" id="list-shopping"></ul>
             </div>
 
-            <!-- Food (Toggle) -->
+            <!-- Food -->
             <div class="mb-4">
                 <div class="flex justify-between items-center border-b border-orange-200 pb-1 mb-2 sticky top-0 bg-white z-10">
                     <h3 class="text-sm font-semibold text-orange-600">🍜 맛집 & 카페 (Food)</h3>
@@ -237,7 +177,6 @@
         </div>
     </div>
 
-    <!-- Hidden Input for Copy -->
     <input type="text" id="copy-input" style="position: absolute; left: -9999px;">
 
     <script>
@@ -252,7 +191,6 @@
         }).addTo(map);
 
         // --- 2. Icons ---
-        // scale parameter added: 1.0 = original size, 0.6 = 60% size
         const createIcon = (color, scale = 1.0) => new L.Icon({
             iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -262,36 +200,36 @@
             shadowSize: [41 * scale, 41 * scale]
         });
 
-        // Hotel gets scale 0.7, others get scale 0.6
         const icons = {
             hotel: createIcon('red', 0.7),
             shopping: createIcon('blue', 0.6),
-            special: createIcon('green', 0.6),
+            special: createIcon('green', 0.6), // Used for Wife-Shopping
             food: createIcon('orange', 0.6),
             wife_food: createIcon('violet', 0.6),
-            wife_cafe: createIcon('gold', 0.6),
-            wife_shopping: createIcon('pink', 0.6)
+            wife_cafe: createIcon('gold', 0.6)
         };
 
-        // --- 3. Data with Addresses ---
+        // --- 3. Data ---
         const locations = [
             // Hotel
             { name: "All Day Place Shibuya", lat: 35.661494, lng: 139.703126, type: "hotel", desc: "미야시타 파크 옆 호텔", address: "1 Chome-17-1 Shibuya, Shibuya City, Tokyo 150-0002" },
 
-            // Landmarks (Added New)
+            // Wife-Shopping (Stored as 'special' type)
+            { name: "Harvest Kitchen", lat: 35.645511, lng: 139.707755, type: "special", desc: "주방용품 전문점", address: "1 Chome-18-9, Ebisuminami, Shibuya, Tokyo 150-0022" },
+            { name: "Lemaire (Ebisu)", lat: 35.644342, lng: 139.714341, type: "special", desc: "르메르 의류", address: "3 Chome-21-1 Ebisu, Shibuya, Tokyo 150-0013" },
+            { name: "Hender Scheme", lat: 35.646543, lng: 139.717654, type: "special", desc: "핸더스킴 가죽/의류", address: "2 Chome-17-20 Ebisu, Shibuya, Tokyo 150-0013" },
+            { name: "Officine Universelle Buly", lat: 35.648321, lng: 139.705432, type: "special", desc: "불리 1803 (화장품)", address: "1 Chome-25-9 Ebisunishi, Shibuya, Tokyo 150-0021" },
             { name: "Seibu Shibuya", lat: 35.6603, lng: 139.7004, type: "special", desc: "백화점", address: "21-1 Udagawacho, Shibuya City, Tokyo 150-8330" },
             { name: "21_21 Design Sight", lat: 35.6661, lng: 139.7300, type: "special", desc: "전시관/미술관", address: "9 Chome-7-6 Akasaka, Minato City, Tokyo 107-0052" },
             { name: "National Art Center", lat: 35.6652, lng: 139.7264, type: "special", desc: "국립신미술관", address: "7 Chome-22-2 Roppongi, Minato City, Tokyo 106-8558" },
             { name: "Akachan Honpo Kinshicho", lat: 35.6975, lng: 139.8138, type: "special", desc: "아동복 전문 (아카짱혼포)", address: "2 Chome−2−1 ArcaKit Kinshicho 5F, Sumida City, Tokyo 130-0013" },
             { name: "Toranomon Hills", lat: 35.6662, lng: 139.7495, type: "special", desc: "복합 문화 공간 (구경)", address: "1 Chome-23-1 Toranomon, Minato City, Tokyo 105-6390" },
             { name: "OZEKI Tokyo Gallery", lat: 35.6860, lng: 139.7798, type: "special", desc: "아카리 조명 (이사무 노구치)", address: "1 Chome-2-6 Nihonbashiningyocho, Chuo City, Tokyo 103-0013" },
+            { name: "NUIR Vintage", lat: 35.661965, lng: 139.698372, type: "special", desc: "빈티지샵", address: "3−5 Udagawacho, Shibuya City, Tokyo 150-0042 (5F)" },
+            { name: "AMORE Omotesando", lat: 35.665786, lng: 139.710328, type: "special", desc: "빈티지샵", address: "5 Chome-1-15 Jingumae, Shibuya City, Tokyo 150-0001" },
+            { name: "QOO (Vintage Qoo)", lat: 35.666212, lng: 139.708892, type: "special", desc: "빈티지샵", address: "5 Chome−2−6 Jingumae, Shibuya City, Tokyo 150-0001 (B1F-2F)" },
 
-            // Wife's Shopping (New Category)
-            { name: "NUIR Vintage", lat: 35.661965, lng: 139.698372, type: "wife_shopping", desc: "빈티지샵", address: "3−5 Udagawacho, Shibuya City, Tokyo 150-0042 (5F)" },
-            { name: "AMORE Omotesando", lat: 35.665786, lng: 139.710328, type: "wife_shopping", desc: "빈티지샵", address: "5 Chome-1-15 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "QOO (Vintage Qoo)", lat: 35.666212, lng: 139.708892, type: "wife_shopping", desc: "빈티지샵", address: "5 Chome−2−6 Jingumae, Shibuya City, Tokyo 150-0001 (B1F-2F)" },
-
-            // Wife's Food (New Category)
+            // Wife's Food
             { name: "Tsujihan Ark Hills", lat: 35.6675, lng: 139.7397, type: "wife_food", desc: "카이센동 (아크모리 빌딩)", address: "1 Chome−12−32 Ark Mori Building 3F, Akasaka, Minato City, Tokyo 107-0052" },
             { name: "Onigiri Cafe", lat: 35.6688, lng: 139.6932, type: "wife_food", desc: "조식 (오니기리)", address: "1 Chome−9−15, Tomigaya, Shibuya, Tokyo 151-0063" },
             { name: "Yakiniku Inoue Ginza", lat: 35.674315, lng: 139.766763, type: "wife_food", desc: "야키니쿠", address: "1 Chome-6-6 Ginza, Chuo City, Tokyo 104-0061" },
@@ -299,67 +237,40 @@
             { name: "Otazushi", lat: 35.685382, lng: 139.780362, type: "wife_food", desc: "스시 오마카세", address: "1 Chome-5-2 Nihonbashiningyocho, Chuo City, Tokyo 103-0013" },
             { name: "Nihonbashi Tonkatsu Hajime", lat: 35.6865, lng: 139.7758, type: "wife_food", desc: "돈가스", address: "1 Chome−13−9, Nihonbashimuromachi, Chuo City, Tokyo 103-0022" },
 
-            // Wife's Cafe (New Category)
+            // Wife's Cafe
             { name: "Bongen Coffee Ginza", lat: 35.6724, lng: 139.7707, type: "wife_cafe", desc: "카페 (본겐 커피)", address: "2 Chome-16-3 Ginza, Chuo City, Tokyo 104-0061" },
             { name: "Glitch Coffee Ginza", lat: 35.6702, lng: 139.7695, type: "wife_cafe", desc: "카페 (글릿치 커피)", address: "4 Chome−14−8 Ginza, Chuo City, Tokyo 104-0061" },
             { name: "Camelback Sandwich", lat: 35.6639, lng: 139.6924, type: "wife_cafe", desc: "카페 (샌드위치)", address: "42-2 Kamiyamacho, Shibuya, Tokyo 150-0047" },
             { name: "Cloud Club Matcha", lat: 35.6710, lng: 139.7685, type: "wife_cafe", desc: "말차 카페", address: "3 Chome-14-6 Ginza, Chuo City, Tokyo 104-0061" },
 
-            // Shopping (New & Existing)
+            // Shopping
             { name: "Hankyu Men's Tokyo", lat: 35.6732, lng: 139.7615, type: "shopping", desc: "백화점 (RRL, WareHouse 등)", address: "2 Chome-5-1 Yurakucho, Chiyoda City, Tokyo 100-8488" },
             { name: "Isetan Men's Shinjuku", lat: 35.6916, lng: 139.7046, type: "shopping", desc: "백화점 (RRL 등)", address: "3 Chome-14-1 Shinjuku, Shinjuku City, Tokyo 160-0022" },
             { name: "Kith Tokyo", lat: 35.6617, lng: 139.7018, type: "shopping", desc: "스니커즈 & 스트릿 편집샵", address: "6 Chome-20-10 Jingumae, Shibuya City, Tokyo 150-0001" },
             { name: "Kapital Ebisu", lat: 35.6469, lng: 139.7090, type: "shopping", desc: "캐피탈", address: "2 Chome-20-2 Ebisuminami, Shibuya City, Tokyo 150-0022" },
             { name: "Kapital Roppongi", lat: 35.6604, lng: 139.7292, type: "shopping", desc: "캐피탈", address: "6 Chome-10-1 Roppongi, Minato City, Tokyo 106-6108" },
             { name: "The Flat Head", lat: 35.6710, lng: 139.7060, type: "shopping", desc: "더 플랫 헤드", address: "3 Chome-24-2 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "PITTZZ", lat: 35.6738, lng: 139.7085, type: "shopping", desc: "빈티지샵", address: "2 Chome-16-16 Jingumae, Shibuya City, Tokyo 150-0001" },
             { name: "RAGTAG Harajuku", lat: 35.6672, lng: 139.7068, type: "shopping", desc: "세컨핸드샵", address: "6 Chome-14-2 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "RAGTAG Shibuya", lat: 35.6631, lng: 139.7004, type: "shopping", desc: "세컨핸드샵", address: "1 Chome-17-7 Jinnan, Shibuya City, Tokyo 150-0041" },
             { name: "Nanamica Daikanyama", lat: 35.6508, lng: 139.6995, type: "shopping", desc: "나나미카", address: "26-13 Sarugakucho, Shibuya City, Tokyo 150-0033" },
-            { name: "L'ECHOPPE Aoyama", lat: 35.6648, lng: 139.7145, type: "shopping", desc: "편집샵", address: "3 Chome-17-3 Minamiaoyama, Minato City, Tokyo 107-0062" },
-            { name: "1LDK Nakameguro", lat: 35.6462, lng: 139.6980, type: "shopping", desc: "편집샵", address: "1 Chome-8-28 Kamimeguro, Meguro City, Tokyo 153-0051" },
-            { name: "Freak's Store Shibuya", lat: 35.6618, lng: 139.7005, type: "shopping", desc: "아메카지 편집샵", address: "1 Chome-13-1 Jinnan, Shibuya City, Tokyo 150-0041" },
-            { name: "United Arrows Harajuku", lat: 35.6688, lng: 139.7047, type: "shopping", desc: "편집샵", address: "3 Chome-28-1 Jingumae, Shibuya City, Tokyo 150-0001" },
             { name: "Junky Special", lat: 35.694768, lng: 139.702812, type: "shopping", desc: "편집샵 (Buzz Rickson 등)", address: "1 Chome-23-17 Kabukicho, Shinjuku City, Tokyo 160-0021" },
             { name: "Beams Plus Harajuku", lat: 35.671848, lng: 139.707525, type: "shopping", desc: "아메카지 편집샵 (WareHouse 등)", address: "3 Chome-25-12 Jingumae, Shibuya City, Tokyo 150-0001" },
             { name: "The Real McCoy's Tokyo", lat: 35.664467, lng: 139.702758, type: "shopping", desc: "리얼맥코이 (Real McCoy)", address: "6 Chome-25-8 Jingumae, Shibuya City, Tokyo 150-0001" },
             { name: "RRL Omotesando", lat: 35.667180, lng: 139.708892, type: "shopping", desc: "더블알엘 (RRL)", address: "4 Chome-12-10 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "Desolation Row", lat: 35.6650, lng: 139.7030, type: "shopping", desc: "프리휠러스", address: "2 Chome-31-3 Jingumae, Shibuya City, Tokyo 150-0001" },
             { name: "Hollywood Ranch Market", lat: 35.649626, lng: 139.703664, type: "shopping", desc: "아메카지 편집샵", address: "28-17 Sarugakucho, Shibuya City, Tokyo 150-0033" },
             { name: "Warehouse & Co. Tokyo", lat: 35.649460, lng: 139.707563, type: "shopping", desc: "웨어하우스 (WareHouse)", address: "1 Chome-29-8 Ebisunishi, Shibuya City, Tokyo 150-0021" },
-            { name: "Okura", lat: 35.6485, lng: 139.7025, type: "shopping", desc: "블루블루 재팬", address: "20-11 Sarugakucho, Shibuya City, Tokyo 150-0033" },
             { name: "Hinoya (Ueno)", lat: 35.709424, lng: 139.774776, type: "shopping", desc: "편집샵 (Buzz Rickson, WareHouse 등)", address: "6 Chome-10-14 Ueno, Taito City, Tokyo 110-0005" },
             { name: "BerBerJin", lat: 35.669865, lng: 139.706869, type: "shopping", desc: "빈티지샵", address: "3 Chome-26-11 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "Fake Alpha", lat: 35.668726, lng: 139.707449, type: "shopping", desc: "빈티지샵", address: "1 Chome-6-11 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "Fullcount Tokyo", lat: 35.6695, lng: 139.7055, type: "shopping", desc: "풀카운트 (FullCount)", address: "3 Chome-20-7 Jingumae, Shibuya City, Tokyo 150-0001" },
             { name: "Supreme Shibuya", lat: 35.663364, lng: 139.700772, type: "shopping", desc: "슈프림", address: "1 Chome-18-2 Jinnan, Shibuya City, Tokyo 150-0041" },
-            { name: "Supreme Harajuku", lat: 35.669968, lng: 139.706692, type: "shopping", desc: "슈프림", address: "4 Chome-32-7 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "Supreme Daikanyama", lat: 35.6491, lng: 139.7028, type: "shopping", desc: "슈프림", address: "1 Chome-6 Sarugakucho, Shibuya City, Tokyo 150-0033" },
             { name: "Stussy Shibuya", lat: 35.662548, lng: 139.700251, type: "shopping", desc: "스투시", address: "1 Chome-14-5 Jinnan, Shibuya City, Tokyo 150-0041" },
-            { name: "Stussy Harajuku", lat: 35.669352, lng: 139.706132, type: "shopping", desc: "스투시", address: "4 Chome-28-2 Jingumae, Shibuya City, Tokyo 150-0001" },
 
             // Food & Cafe
             { name: "Tsujihan Nihonbashi", lat: 35.6822, lng: 139.7733, type: "food", desc: "카이센동", address: "3 Chome-1-15 Nihonbashi, Chuo City, Tokyo 103-0027" },
-            { name: "Tsujihan Midtown", lat: 35.6657, lng: 139.7310, type: "food", desc: "카이센동", address: "9 Chome-7-1 Akasaka, Minato City, Tokyo 107-0052" },
-            { name: "Time is kani", lat: 35.6668, lng: 139.7755, type: "food", desc: "게 요리 전문점", address: "4-5 Akashicho, Chuo City, Tokyo 104-0044" },
+            { name: "Afuri Ramen", lat: 35.648153, lng: 139.710785, type: "food", desc: "유자 시오 라멘", address: "1 Chome-1-7 Ebisu, Shibuya, Tokyo 150-0013" },
             { name: "Torikatsu Chicken", lat: 35.658097, lng: 139.696884, type: "food", desc: "노포 (튀김 정식)", address: "2 Chome-16-19 Dogenzaka, Shibuya City, Tokyo 150-0043" },
             { name: "Tonkatsu Maisen Aoyama", lat: 35.668551, lng: 139.712330, type: "food", desc: "돈카츠 전문점", address: "4 Chome-8-5 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "Sakurai Tea Experience", lat: 35.665389, lng: 139.713531, type: "food", desc: "일본차(Tea) 카페", address: "5 Chome-6-23 Minamiaoyama, Minato City, Tokyo 107-0062" },
-            { name: "Toritake", lat: 35.6575, lng: 139.6980, type: "food", desc: "야키토리", address: "1 Chome-6-1 Dogenzaka, Shibuya City, Tokyo 150-0043" },
-            { name: "Gohan-ya Isseki Sancho", lat: 35.649303, lng: 139.706213, type: "food", desc: "일본 가정식", address: "29-8 Sarugakucho, Shibuya City, Tokyo 150-0033" },
-            { name: "Sarutahiko Coffee", lat: 35.647754, lng: 139.709384, type: "food", desc: "스페셜티 커피", address: "1 Chome-6-1 Ebisu, Shibuya City, Tokyo 150-0013" },
-            { name: "Afuri Ramen", lat: 35.648153, lng: 139.710785, type: "food", desc: "유자 시오 라멘", address: "1 Chome-1-7 Ebisu, Shibuya City, Tokyo 150-0013" },
-            { name: "Katsumidori Seibu", lat: 35.6605, lng: 139.7005, type: "food", desc: "회전초밥", address: "21-1 Udagawacho, Shibuya City, Tokyo 150-8330" },
-            { name: "Tonkatsu Yamabe (Ueno)", lat: 35.708781, lng: 139.775012, type: "food", desc: "돈카츠", address: "6 Chome-2-6 Ueno, Taito City, Tokyo 110-0005" },
-            { name: "Higuma Doughnuts", lat: 35.667500, lng: 139.708000, type: "food", desc: "도넛 & 커피", address: "4 Chome-9-13 Jingumae, Shibuya City, Tokyo 150-0001" },
-            { name: "Kaikaya by the Sea", lat: 35.656886, lng: 139.694663, type: "food", desc: "해산물 퓨전 요리", address: "23-7 Maruyamacho, Shibuya City, Tokyo 150-0044" },
-            { name: "Abura Soba Shibuya", lat: 35.659918, lng: 139.702179, type: "food", desc: "아부라 소바", address: "3 Chome-18-10 Shibuya, Shibuya City, Tokyo 150-0002" },
-            { name: "Otazushi (Ningyocho)", lat: 35.685382, lng: 139.780362, type: "food", desc: "스시 오마카세", address: "1 Chome-5-2 Nihonbashiningyocho, Chuo City, Tokyo 103-0013" },
-            { name: "Yakiniku Inoue (Ginza)", lat: 35.674315, lng: 139.766763, type: "food", desc: "야키니쿠", address: "1 Chome-6-6 Ginza, Chuo City, Tokyo 104-0061" },
-            { name: "Sekiya Spaghetti (Nakameguro)", lat: 35.644485, lng: 139.699564, type: "food", desc: "일본식 스파게티", address: "2 Chome-29-8 Kamimeguro, Meguro City, Tokyo 153-0051" }
+            { name: "Sakurai Tea Experience", lat: 35.665389, lng: 139.713531, type: "food", desc: "일본차(Tea) 카페", address: "5 Chome-6-23 Minamiaoyama, Minato City, Tokyo 107-0062" }
         ];
 
-        // Global Copy Function
         function copyAddress(address) {
             const input = document.getElementById('copy-input');
             input.value = address;
@@ -374,99 +285,49 @@
                 style: {
                     background: "linear-gradient(to right, #00b09b, #96c93d)",
                     borderRadius: "20px",
-                    fontSize: "14px",
-                    boxShadow: "0 3px 6px rgba(0,0,0,0.2)"
+                    fontSize: "14px"
                 }
             }).showToast();
         }
 
-        // --- 4. Logic: Render Markers & List ---
-        // Separate marker creation and list rendering to handle sorting
-        
-        // A. Create Markers
-        locations.forEach((loc, index) => {
-            const marker = L.marker([loc.lat, loc.lng], { icon: icons[loc.type] });
-            
-            // Add all markers initially
-            marker.addTo(map);
+        // --- 4. Logic: Markers & List ---
+        const categories = { hotel: [], special: [], shopping: [], food: [], wife_food: [], wife_cafe: [] };
 
+        locations.forEach((loc) => {
+            const marker = L.marker([loc.lat, loc.lng], { icon: icons[loc.type] }).addTo(map);
             marker.bindTooltip(loc.name, { permanent: true, direction: 'top', offset: L.point(0, -30), className: 'custom-tooltip' });
             
-            const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
-            
-            // Updated Popup UI
             marker.bindPopup(`
                 <div class="text-center" style="min-width: 200px;">
                     <b class="text-base text-gray-800">${loc.name}</b><br>
                     <span class="text-xs text-gray-500">${loc.desc}</span>
-                    
-                    <div class="mt-1 mb-1 p-1 bg-gray-50 border border-gray-200 rounded cursor-pointer hover:bg-gray-100 transition-colors" 
-                         onclick="copyAddress('${loc.address}')" title="클릭하여 주소 복사">
-                        <p class="text-[10px] font-mono text-gray-700 break-words leading-tight select-all text-center">${loc.address}</p>
+                    <div class="mt-1 mb-1 p-1 bg-gray-50 border border-gray-200 rounded cursor-pointer hover:bg-gray-100" 
+                         onclick="copyAddress('${loc.address}')">
+                        <p class="text-[10px] text-gray-700 break-words leading-tight text-center">${loc.address}</p>
                     </div>
-
-                    <a href="${googleMapsLink}" target="_blank" 
-                       class="inline-block w-full py-1 bg-white text-gray-800 border border-gray-300 text-xs font-bold rounded shadow hover:bg-gray-50 transition-colors no-underline">
-                        🗺️ Google 지도에서 보기
+                    <a href="https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}" target="_blank" 
+                       class="inline-block w-full py-1 bg-white text-gray-800 border border-gray-300 text-xs font-bold rounded shadow no-underline">
+                        🗺️ Google 지도 보기
                     </a>
                 </div>
             `);
-
-            // Attach marker to location object for easy access
             loc.marker = marker;
+            if (categories[loc.type]) categories[loc.type].push(loc);
         });
 
-        // B. Group and Sort Locations for List
-        const categories = {
-            hotel: [],
-            special: [],
-            shopping: [],
-            food: [],
-            wife_food: [],
-            wife_cafe: [],
-            wife_shopping: []
-        };
-
-        // Grouping
-        locations.forEach(loc => {
-            if (categories[loc.type]) {
-                categories[loc.type].push(loc);
-            }
-        });
-
-        // Sorting & Rendering
+        // Render List
         Object.keys(categories).forEach(type => {
-            // Sort by Name (Alphabetical)
-            categories[type].sort((a, b) => a.name.localeCompare(b.name, 'ko', { sensitivity: 'base' }));
-
-            const listId = `list-${type}`;
-            const ul = document.getElementById(listId);
-            
+            categories[type].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+            const ul = document.getElementById(`list-${type}`);
             if (ul) {
-                ul.innerHTML = ""; // Clear existing (safe measure)
                 categories[type].forEach(loc => {
                     const li = document.createElement('li');
-                    li.className = "cursor-pointer hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-colors flex items-center justify-between group border-b border-gray-100 last:border-0";
-                    li.innerHTML = `
-                        <span class="text-gray-700 group-hover:text-blue-700">${loc.name}</span>
-                        <span class="text-gray-300 text-xs group-hover:text-blue-400">➤</span>
-                    `;
-                    
+                    li.className = "cursor-pointer hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded flex items-center justify-between border-b border-gray-100 last:border-0";
+                    li.innerHTML = `<span class="text-gray-700">${loc.name}</span><span class="text-gray-300 text-xs">➤</span>`;
                     li.onclick = () => {
-                        // Close sidebar on mobile when clicked
-                        if (window.innerWidth < 1024) {
-                            toggleList(false);
-                        }
-
-                        // Check if marker is added to map (if not, add it temporarily or assume user enabled filter)
-                        if (!map.hasLayer(loc.marker)) {
-                            loc.marker.addTo(map);
-                        }
-
-                        // Move Map
+                        if (window.innerWidth < 1024) toggleList(false);
+                        if (!map.hasLayer(loc.marker)) loc.marker.addTo(map);
                         map.setView([loc.lat, loc.lng], 16);
-                        
-                        // Open Popup
                         loc.marker.openPopup();
                     };
                     ul.appendChild(li);
@@ -474,21 +335,12 @@
             }
         });
 
-        // --- 5. Logic: Category Toggle ---
         function toggleCategory(type, isVisible) {
-            // Retrieve list of locations for this category
             if(categories[type]) {
-                categories[type].forEach(loc => {
-                    if (isVisible) {
-                        loc.marker.addTo(map);
-                    } else {
-                        loc.marker.remove();
-                    }
-                });
+                categories[type].forEach(loc => isVisible ? loc.marker.addTo(map) : loc.marker.remove());
             }
         }
 
-        // --- 6. Toggle List Logic ---
         const listHeader = document.getElementById('list-header');
         const listContent = document.getElementById('list-content');
         const toggleIcon = document.getElementById('toggle-icon');
@@ -496,96 +348,26 @@
 
         function toggleList(expand) {
             isExpanded = expand;
-            if (isExpanded) {
-                listContent.style.display = 'block';
-                listContent.style.opacity = '1';
-                toggleIcon.style.transform = 'rotate(0deg)';
-            } else {
-                listContent.style.display = 'none';
-                listContent.style.opacity = '0';
-                toggleIcon.style.transform = 'rotate(180deg)';
-            }
+            listContent.style.display = isExpanded ? 'block' : 'none';
+            toggleIcon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
         }
 
-        listHeader.onclick = () => {
-            toggleList(!isExpanded);
-        };
-
-        // Mobile Initial State
-        if (window.innerWidth < 1024) {
-             toggleList(false);
-        }
-
-        // --- 7. Geolocation Logic ---
-        let userMarker = null;
-        let userCircle = null;
+        listHeader.onclick = () => toggleList(!isExpanded);
+        if (window.innerWidth < 1024) toggleList(false);
 
         function findMyLocation() {
-            // Toast notification indicating search has started
-            Toastify({
-                text: "📍 위치를 찾는 중...",
-                duration: 2000,
-                gravity: "top", 
-                position: "center", 
-                style: {
-                    background: "linear-gradient(to right, #3B82F6, #2563EB)",
-                    borderRadius: "20px",
-                    fontSize: "14px",
-                    boxShadow: "0 3px 6px rgba(0,0,0,0.2)"
-                }
-            }).showToast();
-
+            Toastify({ text: "📍 위치 찾는 중...", duration: 2000, gravity: "top", position: "center", style: { background: "#3B82F6", borderRadius: "20px" } }).showToast();
             map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true});
         }
 
-        function onLocationFound(e) {
-            const radius = e.accuracy / 2;
-
-            if (userMarker) map.removeLayer(userMarker);
-            if (userCircle) map.removeLayer(userCircle);
-
-            userMarker = L.marker(e.latlng, {
-                icon: L.divIcon({
-                    className: 'bg-transparent',
-                    html: '<div class="user-pulse"></div>',
-                    iconSize: [16, 16],
-                    iconAnchor: [8, 8]
-                })
-            }).addTo(map)
-            .bindPopup("현재 내 위치 (반경 " + Math.round(radius) + "m)").openPopup();
-
-            userCircle = L.circle(e.latlng, radius).addTo(map);
-        }
-
-        function onLocationError(e) {
-            Toastify({
-                text: "🚫 위치 접근 권한을 확인해주세요.",
-                duration: 3000,
-                gravity: "top", 
-                position: "center", 
-                style: {
-                    background: "#ef4444",
-                    borderRadius: "20px",
-                    fontSize: "14px",
-                    boxShadow: "0 3px 6px rgba(0,0,0,0.2)"
-                }
-            }).showToast();
-        }
-
-        map.on('locationfound', onLocationFound);
-        map.on('locationerror', onLocationError);
-
-        // --- 8. Label Toggle Logic ---
-        document.getElementById('label-toggle').addEventListener('change', function() {
-            const mapDiv = document.getElementById('map');
-            if (this.checked) {
-                mapDiv.classList.remove('map-hide-labels');
-            } else {
-                mapDiv.classList.add('map-hide-labels');
-            }
+        map.on('locationfound', (e) => {
+            L.marker(e.latlng, { icon: L.divIcon({ className: 'bg-transparent', html: '<div class="user-pulse"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }) }).addTo(map).bindPopup("현재 위치").openPopup();
+            L.circle(e.latlng, e.accuracy / 2).addTo(map);
         });
 
+        document.getElementById('label-toggle').addEventListener('change', function() {
+            document.getElementById('map').classList.toggle('map-hide-labels', !this.checked);
+        });
     </script>
 </body>
 </html>
-
