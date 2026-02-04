@@ -118,7 +118,8 @@
         <div class="flex items-center space-x-2 bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700">
             <span class="text-xs text-gray-300 font-bold">이름 표시</span>
             <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" id="label-toggle" class="sr-only peer" checked>
+                <!-- unchecked by default -->
+                <input type="checkbox" id="label-toggle" class="sr-only peer">
                 <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500"></div>
             </label>
         </div>
@@ -126,7 +127,8 @@
 
     <!-- Map Container -->
     <div class="flex-grow relative">
-        <div id="map"></div>
+        <!-- Labels hidden by default (map-hide-labels class added) -->
+        <div id="map" class="map-hide-labels"></div>
         
         <!-- My Location Button (Top Left) -->
         <button id="my-location-btn" 
@@ -238,22 +240,24 @@
         }).addTo(map);
 
         // --- 2. Icons ---
-        const createIcon = (color) => new L.Icon({
+        // scale parameter added: 1.0 = original size, 0.6 = 60% size
+        const createIcon = (color, scale = 1.0) => new L.Icon({
             iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+            iconSize: [25 * scale, 41 * scale],
+            iconAnchor: [12 * scale, 41 * scale],
+            popupAnchor: [1, -34 * scale],
+            shadowSize: [41 * scale, 41 * scale]
         });
 
+        // Hotel gets scale 0.7, others get scale 0.6
         const icons = {
-            hotel: createIcon('red'),
-            shopping: createIcon('blue'),
-            special: createIcon('green'),
-            food: createIcon('orange'),
-            wife_food: createIcon('violet'), // 보라색
-            wife_cafe: createIcon('gold')    // 노란색(골드)
+            hotel: createIcon('red', 0.7),
+            shopping: createIcon('blue', 0.6),
+            special: createIcon('green', 0.6),
+            food: createIcon('orange', 0.6),
+            wife_food: createIcon('violet', 0.6),
+            wife_cafe: createIcon('gold', 0.6)
         };
 
         // --- 3. Data with Addresses ---
@@ -363,9 +367,12 @@
         
         // A. Create Markers
         locations.forEach((loc, index) => {
-            const marker = L.marker([loc.lat, loc.lng], { icon: icons[loc.type] })
-                .addTo(map)
-                .bindTooltip(loc.name, { permanent: true, direction: 'top', offset: L.point(0, -30), className: 'custom-tooltip' });
+            const marker = L.marker([loc.lat, loc.lng], { icon: icons[loc.type] });
+            
+            // Add all markers initially
+            marker.addTo(map);
+
+            marker.bindTooltip(loc.name, { permanent: true, direction: 'top', offset: L.point(0, -30), className: 'custom-tooltip' });
             
             const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
             
@@ -430,6 +437,11 @@
                         // Close sidebar on mobile when clicked
                         if (window.innerWidth < 1024) {
                             toggleList(false);
+                        }
+
+                        // Check if marker is added to map (if not, add it temporarily or assume user enabled filter)
+                        if (!map.hasLayer(loc.marker)) {
+                            loc.marker.addTo(map);
                         }
 
                         // Move Map
